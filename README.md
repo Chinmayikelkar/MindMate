@@ -88,14 +88,14 @@ YouTube API: Currently non-functional, uses placeholder video card
 `npm install`
 
 1. Create a `.env` file:
-GEMINI_API_KEY=your_gemini_api_key (Genereative Language API)
-YOUTUBE_API_KEY=your_youtube_api_key (YouTube data API v3)
+`GEMINI_API_KEY=your_gemini_api_key (Genereative Language API)` and
+`YOUTUBE_API_KEY=your_youtube_api_key (YouTube data API v3)`
 
 1. Start the development server:
 `node app.js` or `npm start`
 
 1. Open the application:
-http://localhost:3000
+`http://localhost:3000`
 
 ---
 
