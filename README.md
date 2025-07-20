@@ -83,19 +83,18 @@ YouTube API: Currently non-functional, uses placeholder video card
 
 1. Clone the repository:
 `git clone https://github.com/Chinmayikelkar/MindMate.git`
-`cd mindmate`
 
-2. Install dependencies:
+1. Install dependencies:
 `npm install`
 
-3. Create a `.env` file:
+1. Create a `.env` file:
 GEMINI_API_KEY=your_gemini_api_key (Genereative Language API)
 YOUTUBE_API_KEY=your_youtube_api_key (YouTube data API v3)
 
-4. Start the development server:
+1. Start the development server:
 `node app.js` or `npm start`
 
-5. Open the application:
+1. Open the application:
 http://localhost:3000
 
 ---
