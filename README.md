@@ -68,25 +68,25 @@ YouTube API: Currently non-functional, uses placeholder video card
 
 ## Project Structure
 
-mindmate/
+`mindmate/
 ├── public/ # Static assets (CSS, images)
 ├── views/ # EJS templates
 ├── routes/ # Express routers
 ├── data/ # moodLogs.json, chatHistory.json
 ├── .env # Environment variables
 ├── app.js # Entry point
-└── README.md
+└── README.md`
 
 ---
 
 ## Setup Instructions
 
 1. Clone the repository:
-git clone https://github.com/Chinmayikelkar/MindMate.git
-cd mindmate
+`git clone https://github.com/Chinmayikelkar/MindMate.git`
+`cd mindmate`
 
 2. Install dependencies:
-npm install
+`npm install`
 
 3. Create a `.env` file:
 GEMINI_API_KEY=your_gemini_api_key (Genereative Language API)
