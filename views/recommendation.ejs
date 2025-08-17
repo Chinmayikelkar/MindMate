@@ -10,15 +10,8 @@
       <div class="card-container">
         <!-- Static Cards -->
         <div class="card">
-          <a
-            href="https://youtu.be/bLpChrgS0AY"
-            target="_blank"
-            style="text-decoration: none"
-          >
-            <img
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ2hvWjViM2gEO9AtM5W0860yZio193FuH06g&s"
-              class="card-img"
-            />
+          <a href="https://youtu.be/bLpChrgS0AY" target="_blank" style="text-decoration: none">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ2hvWjViM2gEO9AtM5W0860yZio193FuH06g&s" class="card-img" />
             <div class="card-content">
               <h3>YouTube: Mindfulness Techniques</h3>
               <p>Watch this video to learn practical mindfulness exercises.</p>
@@ -27,15 +20,8 @@
         </div>
 
         <div class="card">
-          <a
-            href="https://www.youtube.com/watch?v=bjvPbfxE3CI&pp=ygUVcG9kY2FzdCBtZW50YWwgaGVhbHRoI"
-            target="_blank"
-            style="text-decoration: none"
-          >
-            <img
-              src="https://www.ucheck.co.uk/wp-content/uploads/mental-health-2313426_1280.png"
-              class="card-img"
-            />
+          <a href="https://www.youtube.com/watch?v=bjvPbfxE3CI&pp=ygUVcG9kY2FzdCBtZW50YWwgaGVhbHRoI" target="_blank" style="text-decoration: none">
+            <img src="https://www.ucheck.co.uk/wp-content/uploads/mental-health-2313426_1280.png" class="card-img" />
             <div class="card-content">
               <h3>Podcast: Mental Health Matters</h3>
               <p>Listen to experts discuss strategies for mental well-being.</p>
@@ -44,42 +30,22 @@
         </div>
 
         <div class="card">
-          <a
-            href="https://youtu.be/9PodDl4DTNI"
-            target="_blank"
-            style="text-decoration: none"
-          >
-            <img
-              src="https://www.ttu.edu/now/posts/Media/_HeroImages/fight-another-day-m.jpg"
-              class="card-img"
-            />
+          <a href="https://youtu.be/9PodDl4DTNI" target="_blank" style="text-decoration: none">
+            <img src="https://www.ttu.edu/now/posts/Media/_HeroImages/fight-another-day-m.jpg" class="card-img" />
             <div class="card-content">
               <h3>Short Video: Students to Student Message</h3>
-              <p>
-                Students speaking directly to students, reminding their peers
-                that it's okay to not be okay.
-              </p>
+              <p>Students speaking directly to students, reminding their peers that it's okay to not be okay.</p>
             </div>
           </a>
         </div>
 
         <!-- Gemini Suggestion Card -->
         <div class="card" id="gemini-card">
-          <a
-            href="#"
-            onclick="generateGeminiSuggestion(); return false;"
-            style="text-decoration: none"
-          >
-            <img
-              src="https://www.tulasihealthcare.com/wp-content/uploads/2023/01/Imp-mental-health-scaled.webp"
-              class="card-img"
-            />
+          <a href="#" onclick="generateGeminiSuggestion(); return false;" style="text-decoration: none">
+            <img src="https://www.tulasihealthcare.com/wp-content/uploads/2023/01/Imp-mental-health-scaled.webp" class="card-img" />
             <div class="card-content">
               <h3>Gemini: Custom Suggestion</h3>
-              <p>
-                Click to get a personalized resource suggestion powered by
-                Gemini AI.
-              </p>
+              <p>Click to get a personalized resource suggestion powered by Gemini AI.</p>
             </div>
           </a>
         </div>
@@ -87,60 +53,6 @@
     </div>
 
     <%- include('partials/footer') %>
-
-    <script>
-      let suggestionGenerated = false;
-
-      async function generateGeminiSuggestion() {
-        if (suggestionGenerated) {
-          alert("You've already received your custom suggestion.");
-          return;
-        }
-
-        const geminiCard = document.getElementById("gemini-card");
-
-        // Show loading animation
-        const loadingCard = document.createElement("div");
-        loadingCard.className = "card";
-        loadingCard.id = "loading-card";
-        loadingCard.innerHTML = `
-      <div class="card-content" style="display: flex; align-items: center; justify-content: center; height: 100%;">
-        <p style="font-size: 1.2em;">⏳ Fetching your personalized suggestion...</p>
-      </div>
-    `;
-
-        geminiCard.replaceWith(loadingCard);
-
-        try {
-          const res = await fetch("/api/custom-suggestion");
-          const data = await res.json();
-
-          if (!data.videoId) throw new Error("No video ID returned");
-
-          const newCard = document.createElement("div");
-          newCard.className = "card";
-
-          newCard.innerHTML = `
-        <a href="https://www.youtube.com/watch?v=${data.videoId}" target="_blank" style="text-decoration: none">
-          <img src="${data.thumbnail}" class="card-img" />
-          <div class="card-content">
-            <h3>${data.title}</h3>
-            <p>${data.description}</p>
-          </div>
-        </a>
-      `;
-
-          loadingCard.replaceWith(newCard);
-          suggestionGenerated = true;
-        } catch (err) {
-          console.error("Error fetching recommendation:", err);
-          loadingCard.innerHTML = `
-        <div class="card-content" style="text-align: center;">
-          <p style="color: red;">❌ ${err.message}<br/>Please try again later.</p>
-        </div>
-      `;
-        }
-      }
-    </script>
+    <script src="/js/recommendation.js"></script>
   </body>
 </html>

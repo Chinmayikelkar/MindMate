@@ -1,165 +1,60 @@
 <%- include('partials/head') %>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  </head>
-  <body>
-    <%- include('partials/nav') %>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="/js/mindmate.js" defer></script>
+</head>
+<body>
+  <%- include('partials/nav') %>
 
-    <!-- Gemini Chat Section -->
-    <h1 style="margin-top: 50px">Share Your Feelings and Track your Mood!</h1>
-    <section class="container">
-      <form id="feelingsForm">
-        <label for="feelings"><h2>How are you feeling today?</h2></label>
+  <!-- Gemini Chat Section -->
+  <h1 style="margin-top: 50px">Share Your Feelings and Track your Mood!</h1>
+  <section class="container">
+    <form id="feelingsForm">
+      <label for="feelings"><h2>How are you feeling today?</h2></label>
+      <textarea
+        id="feelings"
+        name="feelings"
+        rows="5"
+        required
+        aria-label="User feelings"
+        placeholder="share your feelings here..."
+      ></textarea>
+      <button type="submit">Submit</button>
+    </form>
+    <div id="geminiResponse" class="response-area">
+      <p><strong>MindMate:</strong> <span id="responseText"></span></p>
+    </div>
+  </section>
+
+  <a style="margin-left: 43%;" href="#moodTracker" class="button-link">Go to Mood Tracker</a>
+
+  <!-- Mood Tracker Section -->
+  <section id="moodTracker" style="margin-top: 100px; padding: 0.1rem;" class="container">
+    <h2 style="text-align: center">Mood Tracker</h2>
+    <div class="emoji-picker">
+      <form id="moodForm">
+        <div>
+          <button type="button" class="emoji-btn" data-mood="happy">😊</button>
+          <button type="button" class="emoji-btn" data-mood="neutral">😐</button>
+          <button type="button" class="emoji-btn" data-mood="sad">😔</button>
+        </div>
         <textarea
-          id="feelings"
-          name="feelings"
-          rows="5"
-          required
-          aria-label="User feelings"
-          placeholder="share your feelings here..."
+          id="moodNote"
+          placeholder="Optional: Add a note about your mood..."
+          rows="3"
         ></textarea>
-        <button type="submit">Submit</button>
       </form>
-      <div id="geminiResponse" class="response-area">
-        <p><strong>MindMate:</strong> <span id="responseText"></span></p>
-      </div>
-    </section>
 
-    <a style="margin-left: 43%;" href="#moodTracker" class="button-link">Go to Mood Tracker</a>
+      <div id="status" style="margin-top: 10px; color: green"></div>
+    </div>
+    <div id="mood-chart">
+      <canvas id="chart"></canvas>
+    </div>
+  </section>
 
-    <!-- Mood Tracker Section -->
-    <section id="moodTracker" style="margin-top: 100px; padding: 0.1rem;" class="container">
-      <h2 style="text-align: center">Mood Tracker</h2>
-      <div class="emoji-picker">
-        <form id="moodForm">
-          <div>
-            <button type="button" class="emoji-btn" data-mood="happy">
-              😊
-            </button>
-            <button type="button" class="emoji-btn" data-mood="neutral">
-              😐
-            </button>
-            <button type="button" class="emoji-btn" data-mood="sad">😔</button>
-          </div>
-          <textarea
-            id="moodNote"
-            placeholder="Optional: Add a note about your mood..."
-            rows="3"
-          ></textarea>
-        </form>
+  <a style="margin-left: 41%; margin-bottom: -10%;" href="/recommendations" class="button-link">
+    Go to Recommendations
+  </a>
 
-        <div id="status" style="margin-top: 10px; color: green"></div>
-      </div>
-      <div id="mood-chart">
-        <canvas id="chart"></canvas>
-      </div>
-    </section>
-    <a style="margin-left: 41%; margin-bottom: -10%;" href="/recommendations" class="button-link">Go to Recommendations</a>
-
-    <!-- Scripts -->
-    <script>
-      // Gemini Chat Submission
-      document
-        .getElementById("feelingsForm")
-        .addEventListener("submit", async function (e) {
-          e.preventDefault();
-          const feelings = document.getElementById("feelings").value;
-
-          try {
-            const response = await fetch("/api/feelings", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ feelings }),
-            });
-
-            const data = await response.json();
-            document.getElementById("responseText").textContent =
-              data.reply || "Thank you for sharing.";
-          } catch (error) {
-            document.getElementById("responseText").textContent =
-              "Sorry, something went wrong.";
-          }
-        });
-
-      // Mood Tracker Buttons
-      document.querySelectorAll(".emoji-btn").forEach((btn) => {
-        btn.addEventListener("click", function () {
-          const mood = this.getAttribute("data-mood");
-          const note = document.getElementById("moodNote").value;
-
-          fetch("/log-mood", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ mood, note }),
-          })
-            .then((res) => res.json())
-            .then((data) => {
-              document.getElementById("status").textContent = "Mood saved!";
-              updateChart(data.moods);
-
-              if (data.summary) {
-                alert(data.summary); // Or display in a div
-              }
-
-              document.getElementById("moodNote").value = ""; // Clear note
-            });
-        });
-      });
-
-      // Mood Chart Setup
-      let chart;
-      function updateChart(moods) {
-        const dates = moods.map((m) => m.date);
-        const moodValues = moods.map((m) => {
-          if (m.mood === "happy") return 2;
-          if (m.mood === "neutral") return 1;
-          return 0;
-        });
-
-        if (!chart) {
-          const ctx = document.getElementById("chart").getContext("2d");
-          chart = new Chart(ctx, {
-            type: "line",
-            data: {
-              labels: dates,
-              datasets: [
-                {
-                  label: "Mood Trend",
-                  data: moodValues,
-                  fill: false,
-                  borderColor: "blue",
-                  tension: 0.2,
-                },
-              ],
-            },
-            options: {
-              scales: {
-                y: {
-                  min: 0,
-                  max: 2,
-                  ticks: {
-                    callback: function (value) {
-                      if (value === 2) return "😊";
-                      if (value === 1) return "😐";
-                      if (value === 0) return "😔";
-                      return value;
-                    },
-                  },
-                },
-              },
-            },
-          });
-        } else {
-          chart.data.labels = dates;
-          chart.data.datasets[0].data = moodValues;
-          chart.update();
-        }
-      }
-
-      // Load moods on page load
-      fetch("/get-moods")
-        .then((res) => res.json())
-        .then((data) => updateChart(data.moods));
-    </script>
-    <%- include('partials/footer') %>
-  </body>
+  <%- include('partials/footer') %>
+</body>
 </html>
